@@ -1,0 +1,44 @@
+<div class="container-fluid mt-100">
+  <div class="row" *ngFor="let topic of topics">
+    <div class="col-md-12">
+      <div class="card mb-3">
+        <div class="card-header pr-0 pl-0">
+          <div class="row no-gutters align-items-center w-100">
+            <div class="col font-weight-bold pl-3">
+              {{ topic.topic.mainCategory }}
+            </div>
+            <div class="d-none d-md-block col-6 text-muted">
+              <div class="row no-gutters align-items-center">
+                <div class="col-3">Sujets</div>
+                <div class="col-3">Réponses</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card-body py-3"
+          *ngFor="let subCategory of topic.topic.subCategories"
+        >
+          <div class="row no-gutters align-items-center">
+            <div class="col">
+              <a
+                [routerLink]="['/forum', 'subcategory']"
+                [queryParams]="{ category: subCategory.id }"
+                class="text-big font-weight-semibold"
+                data-abc="true"
+                >{{ subCategory.name }}</a
+              >
+            </div>
+            <div class="d-none d-md-block col-6">
+              <div class="row no-gutters align-items-center">
+                <div class="col-3">120</div>
+                <div class="col-3">14</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="m-0" />
+      </div>
+    </div>
+  </div>
+</div>
