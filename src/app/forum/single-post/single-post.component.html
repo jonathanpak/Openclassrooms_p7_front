@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12" *ngIf="!editMode">
     <div class="card mb-4">
       <div class="card-header">
         <div class="media flex-wrap w-100 align-items-center">
@@ -9,9 +9,7 @@
             alt=""
           />
           <div class="media-body ml-3">
-            <a href="javascript:void(0)" data-abc="true">{{
-              post.author.name
-            }}</a>
+            <a href="javascript:void(0)" data-abc="true">{{ post.authorId }}</a>
             <div class="text-muted small">Créé le {{ post.dateCreated }}</div>
           </div>
         </div>
@@ -40,7 +38,38 @@
             <span class="align-middle">14532</span>
           </span>
         </div>
+        <div
+          class="px-4 pt-3 align-items-center align-middle"
+          *ngIf="isPostAuthor"
+        >
+          <button type="button" class="btn btn-success" (click)="onEditPost()">
+            Modifier
+          </button>
+          <button type="button" class="btn btn-danger" (click)="onDeletePost()">
+            Supprimer
+          </button>
+        </div>
       </div>
     </div>
+  </div>
+  <div *ngIf="editMode">
+    <form (ngSubmit)="onUpdatePost(form)" #form="ngForm">
+      <div class="form-group">
+        <textarea
+          class="form-control"
+          name="content"
+          rows="3"
+          [(ngModel)]="post.content"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="!form.valid">
+        Mettre à jour
+      </button>
+      <button type="button" class="btn btn-danger" (click)="onCancelEditPost()">
+        Annuler
+      </button>
+    </form>
   </div>
 </div>

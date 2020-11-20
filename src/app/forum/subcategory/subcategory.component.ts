@@ -1,11 +1,6 @@
 import { Thread } from './../thread.model';
 import { TopicService } from './../topic.service';
-import {
-  Component,
-  ComponentFactoryResolver,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgForm } from '@angular/forms';
@@ -16,7 +11,9 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./subcategory.component.css'],
 })
 export class SubcategoryComponent implements OnInit, OnDestroy {
-  private paramsSubscription = new Subscription();
+  private paramsSubscription: Subscription;
+  private threadSubscription: Subscription;
+  private topicSubscription: Subscription;
   category: number;
   threads: Thread[] = [];
   newThread = false;
@@ -32,8 +29,12 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
       const category = params['category'];
       this.category = category;
     });
-    this.threads = this.topicService.getThreads(this.category);
-    console.log(this.threads);
+
+    this.threadSubscription = this.topicService
+      .getThreads(this.category)
+      .subscribe((threads: Thread[]) => {
+        this.threads = threads;
+      });
   }
 
   onThread(id: number) {
@@ -49,17 +50,24 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm) {
-    this.topicService.newThread(
-      form.value.title,
-      form.value.content,
-      this.category
-    );
-    this.threads = this.topicService.getThreads(this.category);
+    this.topicSubscription = this.topicService
+      .newThread(form.value.title, form.value.content, this.category)
+      .subscribe((data) => {
+        console.log(data);
+      });
+
+    this.threadSubscription = this.topicService
+      .getThreads(this.category)
+      .subscribe((threads: Thread[]) => {
+        console.log(threads);
+        this.threads = threads;
+      });
     this.newThread = false;
   }
 
   ngOnDestroy() {
     this.paramsSubscription.unsubscribe();
-    // this.threads = this.topicService.getThreads(this.category);
+    this.threadSubscription.unsubscribe();
+    this.topicSubscription.unsubscribe();
   }
 }

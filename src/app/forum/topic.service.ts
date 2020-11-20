@@ -9,22 +9,11 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class TopicService {
-  private topics: Topic[] = [];
+  //private topics: Topic[] = [];
 
-  // private topics: Topic[] = [
-  //   new Topic(
-  //     'Espace Professionnel',
-  //     ['Ressources humaines', 'Comunication & Marketing', 'Informatique'],
-  //     1
-  //   ),
-  //   new Topic('Espace Détente', ['Présentations', 'Afterwork'], 2),
-  // ];
+  private threads: Thread[] = [];
 
-  private threads: Thread[] = [
-    new Thread('Something fancy', 'Nothing new around here', 11, 5),
-    new Thread('Something even fancier', 'Still nothings', 12, 5),
-    new Thread('Something quiet', 'Calm it baby', 13, 7),
-  ];
+  private threadsUrl = 'http://localhost:3000/threads/';
 
   constructor(private http: HttpClient) {}
 
@@ -48,7 +37,6 @@ export class TopicService {
             parentCategory.topic.subCategories.push(topicObject);
           }
         }
-
         return topicsArray;
       })
     );
@@ -59,18 +47,42 @@ export class TopicService {
   }
 
   getThreads(subCategory: number) {
-    // Filter WHERE subcategory = SubCategory
-    return this.threads.slice();
+    return this.http.get('http://localhost:3000/threads/' + subCategory + '/');
   }
 
   getThread(id: number) {
-    //return this.threads[id];
-    // Filter WHERE ID = id
-    return this.threads[0];
+    return this.http.get('http://localhost:3000/threads/single/' + id + '/');
   }
 
-  newThread(title: string, content: string, subcategory: number) {
-    const newThread = new Thread(title, content, 14, subcategory);
-    this.threads.push(newThread);
+  deleteThread(id: number) {
+    return this.http.delete('http://localhost:3000/threads/single/' + id + '/');
+  }
+
+  newThread(title: string, content: string, categoryId: number) {
+    const authorId = 23; // GET AUTHOR ID
+    const dateCreated = new Date().toISOString().slice(0, 10);
+
+    const newThread = new Thread(
+      authorId,
+      title,
+      content,
+      dateCreated,
+      categoryId
+    );
+
+    return this.http.post<Thread>(this.threadsUrl, newThread);
+  }
+
+  updateThread(title: string, content: string, threadId: number) {
+    const updatedThread = {
+      id: threadId,
+      title,
+      content,
+    };
+
+    return this.http.put(
+      'http://localhost:3000/threads/single/' + threadId + '/',
+      updatedThread
+    );
   }
 }

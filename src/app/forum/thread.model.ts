@@ -11,16 +11,16 @@ export class Thread {
   public answersAmount: [];
 
   constructor(
+    authorId: number,
     title: string,
     content: string,
-    authorId: number,
+    dateCreated: string,
     categoryId: number
   ) {
-    this.id = '001';
     this.authorId = authorId;
     this.title = title;
     this.content = content;
     this.categoryId = categoryId;
-    this.dateCreated = 'Now';
+    this.dateCreated = dateCreated;
   }
 }

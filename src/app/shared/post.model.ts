@@ -1,11 +1,12 @@
-import { User } from './user.model';
-
 export class Post {
+  public id: number;
+  public dateCreated: string;
+
   constructor(
-    public id: string,
-    public threadId: string,
+    public authorId: number,
     public content: string,
-    public author: User,
-    public dateCreated: string
-  ) {}
+    public threadId: number
+  ) {
+    this.dateCreated = new Date().toISOString().slice(0, 10);
+  }
 }

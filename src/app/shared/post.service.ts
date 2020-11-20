@@ -1,7 +1,6 @@
-import { UserService } from './user.service';
 import { Post } from './post.model';
 import { Injectable } from '@angular/core';
-import { User } from './user.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -9,54 +8,49 @@ import { User } from './user.model';
 export class PostService {
   private posts: Post[];
 
-  constructor(private userService: UserService) {
-    this.posts = [
-      new Post(
-        '001',
-        '001',
-        'This is my first post',
-        this.userService.getUser(0),
-        'Now'
-      ),
-      new Post(
-        '002',
-        '001',
-        'This is my second post',
-        this.userService.getUser(1),
-        'Two hours ago'
-      ),
-    ];
-  }
+  constructor(private http: HttpClient) {}
 
   getAllPosts() {
     return this.posts.slice();
   }
 
-  getPostsByThreadId(id) {
-    const posts = this.getAllPosts();
-
-    const filteredPosts = posts.filter((post) => {
-      return post.threadId === id;
-    });
-
-    return filteredPosts;
+  getPostsByThreadId(threadId) {
+    return this.http.get(
+      'http://localhost:3000/threads/' + threadId + '/posts'
+    );
   }
 
-  newPost(content: string, thread: string) {
-    const newPost = new Post(
-      '003',
-      thread,
+  getSinglePost(id: number) {
+    return this.http.get('http://localhost:3000/posts/' + id + '/');
+  }
+
+  // newPost(content: string, thread: string) {
+  //   const newPost = new Post(23, 'This is my third post', 28);
+  //   this.posts.push(newPost);
+  // }
+
+  newPost(content: string, threadId: number) {
+    const authorId = 23; // GET AUTHOR ID
+    // const dateCreated = new Date().toISOString().slice(0, 10);
+
+    const newPost = new Post(authorId, content, threadId);
+
+    return this.http.post<Post>('http://localhost:3000/posts/', newPost);
+  }
+
+  deletePost(id: number) {
+    return this.http.delete('http://localhost:3000/posts/' + id + '/');
+  }
+
+  updatePost(content: string, postId: number) {
+    const updatedPost = {
+      id: postId,
       content,
-      new User(
-        123,
-        'Hiparque',
-        'jon@hidid.ci',
-        'President',
-        'No Service',
-        'fake'
-      ),
-      'now'
+    };
+
+    return this.http.put(
+      'http://localhost:3000/posts/' + postId + '/',
+      updatedPost
     );
-    this.posts.push(newPost);
   }
 }

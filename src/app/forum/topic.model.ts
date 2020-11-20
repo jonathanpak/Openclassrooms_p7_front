@@ -8,13 +8,3 @@ export class Topic {
     this.topic = { mainCategory, subCategories, id };
   }
 }
-// export class Topic {
-//   public topic: {};
-//   public mainCategory: string;
-//   public subCategories: string[];
-//   public id: number;
-
-//   constructor(mainCategory: string, subCategories: string[], id: number) {
-//     this.topic = { mainCategory, subCategories, id };
-//   }
-// }
