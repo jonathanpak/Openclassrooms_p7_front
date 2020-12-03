@@ -1,10 +1,16 @@
 export class User {
+  public id: number;
+  public jobTitle: string;
+  public service: string;
+  public displayPicture: string;
+
   constructor(
-    public id: number,
-    public name: string,
+    public username: string,
     public email: string,
-    public jobTitle: string,
-    public service: string,
-    public displayPicture: string
+    private _token: string
   ) {}
+
+  get token() {
+    return this._token;
+  }
 }

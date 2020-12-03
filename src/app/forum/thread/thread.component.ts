@@ -17,6 +17,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   private postsSubscription: Subscription;
   private newPostSubscription: Subscription;
   private paramsSub: Subscription;
+  private postsChangedSubscription: Subscription;
 
   posts: Post[];
   thread: Thread;
@@ -44,6 +45,12 @@ export class ThreadComponent implements OnInit, OnDestroy {
       });
 
     this.getPosts();
+
+    this.postsChangedSubscription = this.postService.postChangedObservable.subscribe(
+      (data) => {
+        this.getPosts();
+      }
+    );
   }
 
   onAnswer() {
@@ -62,12 +69,17 @@ export class ThreadComponent implements OnInit, OnDestroy {
   onSubmit(form: NgForm) {
     this.newPostSubscription = this.postService
       .newPost(form.value.content, this.id)
-      .subscribe((data) => {
-        console.log('Post created');
-        this.getPosts();
-      });
-
-    this.answerMode = false;
+      .subscribe(
+        (data) => {
+          console.log('Post created');
+          this.getPosts();
+        },
+        (error) => console.log(error),
+        () => {
+          this.answerMode = false;
+          this.newPostSubscription.unsubscribe();
+        }
+      );
   }
 
   onEditThread() {
@@ -81,36 +93,46 @@ export class ThreadComponent implements OnInit, OnDestroy {
   onUpdateThread(form: NgForm) {
     this.threadSubscription = this.topicService
       .updateThread(form.value.title, form.value.content, this.id)
-      .subscribe((data) => {
-        console.log(data);
-      });
-
-    this.editMode = false;
+      .subscribe(
+        (data) => {
+          console.log(data);
+        },
+        (error) => console.log(error),
+        () => {
+          this.editMode = false;
+          this.threadSubscription.unsubscribe();
+        }
+      );
   }
   onDeleteThread() {
-    // threadSubscription already used : is it right ?
-    this.threadSubscription = this.topicService
-      .deleteThread(this.id)
-      .subscribe((response) => {
+    this.threadSubscription = this.topicService.deleteThread(this.id).subscribe(
+      (response) => {
         console.log(response);
-      });
-    this.router.navigate(['forum', 'subcategory'], {
-      queryParams: { category: this.thread.categoryId },
-    });
+      },
+      (error) => console.log(console.error),
+      () => {
+        this.router.navigate(['forum', 'subcategory'], {
+          queryParams: { category: this.thread.categoryId },
+        });
+        this.threadSubscription.unsubscribe();
+      }
+    );
   }
 
   getPosts() {
     this.postsSubscription = this.postService
       .getPostsByThreadId(this.id)
-      .subscribe((posts: Post[]) => {
-        this.posts = posts;
-      });
+      .subscribe(
+        (posts: Post[]) => {
+          this.posts = posts;
+        },
+        (error) => console.log(error)
+      );
   }
 
   ngOnDestroy() {
     this.threadSubscription.unsubscribe();
     this.paramsSub.unsubscribe();
-    this.postsSubscription.unsubscribe();
-    this.newPostSubscription.unsubscribe();
+    this.postsChangedSubscription.unsubscribe();
   }
 }

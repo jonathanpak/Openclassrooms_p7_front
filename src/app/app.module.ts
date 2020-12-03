@@ -1,3 +1,4 @@
+import { authInterceptorProviders } from './helpers/auth.interceptor';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,6 +14,10 @@ import { SubcategoryComponent } from './forum/subcategory/subcategory.component'
 import { NewThreadComponent } from './forum/subcategory/new-thread/new-thread.component';
 import { FormsModule } from '@angular/forms';
 import { from } from 'rxjs';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -24,9 +29,12 @@ import { from } from 'rxjs';
     ThreadComponent,
     SubcategoryComponent,
     NewThreadComponent,
+    RegisterComponent,
+    LoginComponent,
+    ProfileComponent,
   ],
-  imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule],
-  providers: [],
+  imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule, NgbModule],
+  providers: [authInterceptorProviders],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

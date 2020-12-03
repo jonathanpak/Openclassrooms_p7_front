@@ -30,11 +30,7 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
       this.category = category;
     });
 
-    this.threadSubscription = this.topicService
-      .getThreads(this.category)
-      .subscribe((threads: Thread[]) => {
-        this.threads = threads;
-      });
+    this.getThreads();
   }
 
   onThread(id: number) {
@@ -52,22 +48,27 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
   onSubmit(form: NgForm) {
     this.topicSubscription = this.topicService
       .newThread(form.value.title, form.value.content, this.category)
-      .subscribe((data) => {
-        console.log(data);
-      });
+      .subscribe(
+        () => {
+          this.getThreads();
+        },
+        (err) => console.error(err),
+        () => this.topicSubscription.unsubscribe()
+      );
 
+    this.newThread = false;
+  }
+
+  getThreads() {
     this.threadSubscription = this.topicService
       .getThreads(this.category)
       .subscribe((threads: Thread[]) => {
-        console.log(threads);
         this.threads = threads;
       });
-    this.newThread = false;
   }
 
   ngOnDestroy() {
     this.paramsSubscription.unsubscribe();
     this.threadSubscription.unsubscribe();
-    this.topicSubscription.unsubscribe();
   }
 }

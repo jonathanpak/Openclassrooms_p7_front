@@ -12,7 +12,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 export class SinglePostComponent implements OnInit, OnDestroy {
   @Input() post: Post;
 
-  postSubscription: Subscription;
+  private postSubscription: Subscription;
+
   isPostAuthor = true;
   editMode = false;
 
@@ -31,22 +32,30 @@ export class SinglePostComponent implements OnInit, OnDestroy {
   onUpdatePost(form: NgForm) {
     this.postSubscription = this.postService
       .updatePost(form.value.content, this.post.id)
-      .subscribe((data) => {
-        console.log(data);
-      });
-
-    this.editMode = false;
-    this.postSubscription.unsubscribe();
+      .subscribe(
+        (data) => {
+          console.log(data);
+        },
+        (error) => console.log(error),
+        () => {
+          this.editMode = false;
+          this.postService.onPostsChanged();
+          this.postSubscription.unsubscribe();
+        }
+      );
   }
 
   onDeletePost() {
-    this.postSubscription = this.postService
-      .deletePost(this.post.id)
-      .subscribe((response) => {
+    this.postSubscription = this.postService.deletePost(this.post.id).subscribe(
+      (response) => {
         console.log(response);
-      });
-
-    // Retrieve new list of posts
+      },
+      (error) => console.log(error),
+      () => {
+        this.postService.onPostsChanged();
+        this.postSubscription.unsubscribe();
+      }
+    );
   }
 
   ngOnDestroy() {}

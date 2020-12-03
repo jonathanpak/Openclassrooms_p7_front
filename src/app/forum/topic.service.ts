@@ -20,7 +20,7 @@ export class TopicService {
   getTopics() {
     return this.http.get('http://localhost:3000/categories').pipe(
       map((topics: any) => {
-        const topicsArray: Topic[] = [];
+        const topicsArray = [];
         // Create main categories
         for (const topic of topics) {
           if (topic.parent_id == 0) {
@@ -32,7 +32,7 @@ export class TopicService {
           const topicObject = { name: topic.category, id: topic.id };
           if (topic.parent_id !== 0) {
             const parentCategory = topicsArray.find(
-              (parent) => parent.topic.id == topic.parent_id
+              (parent) => parent.topic.id === topic.parent_id
             );
             parentCategory.topic.subCategories.push(topicObject);
           }
@@ -43,7 +43,7 @@ export class TopicService {
   }
 
   getAllThreads() {
-    return this.threads.slice();
+    return this.http.get('http://localhost:3000/threads/');
   }
 
   getThreads(subCategory: number) {

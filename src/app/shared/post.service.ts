@@ -1,17 +1,24 @@
 import { Post } from './post.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
   private posts: Post[];
+  private postsChanged = new Subject<any>();
+  postChangedObservable = this.postsChanged.asObservable();
 
   constructor(private http: HttpClient) {}
 
+  onPostsChanged() {
+    this.postsChanged.next();
+  }
+
   getAllPosts() {
-    return this.posts.slice();
+    return this.http.get('http://localhost:3000/posts/');
   }
 
   getPostsByThreadId(threadId) {

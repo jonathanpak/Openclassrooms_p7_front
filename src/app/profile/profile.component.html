@@ -1,0 +1,50 @@
+<div class="container text-center">
+  <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <div class="row">
+      <div class="col xs-12">
+        <img
+          [src]="imageUrl"
+          class="img-fluid rounded-circle"
+          id="imageDisplay"
+          alt=""
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="username">Image :</label>
+      <input
+        type="text"
+        class="form-control"
+        name="imageUrl"
+        placeholder=""
+        [(ngModel)]="imageUrl"
+      />
+    </div>
+    <hr />
+    <div class="form-group">
+      <label for="username">Nom d'utilisateur</label>
+      <input
+        type="text"
+        class="form-control"
+        name="username"
+        id=""
+        aria-describedby="usernameHelpId"
+        placeholder=""
+        [(ngModel)]="username"
+      />
+    </div>
+    <div class="form-group">
+      <label for="email">Adresse email</label>
+      <input
+        type="email"
+        class="form-control"
+        name="email"
+        id=""
+        aria-describedby="emailHelpId"
+        placeholder=""
+        [(ngModel)]="email"
+      />
+    </div>
+    <button class="btn btn-success" type="submit">Confirmer</button>
+  </form>
+</div>

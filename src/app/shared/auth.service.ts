@@ -1,0 +1,114 @@
+import { TokenStorageService } from './token-storage.service';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  Subscription,
+  throwError,
+} from 'rxjs';
+
+import { Router } from '@angular/router';
+import { User } from './user.model';
+import { catchError, tap } from 'rxjs/operators';
+
+const AUTH_API = 'http://localhost:3000/api/auth/';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+};
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  user = new BehaviorSubject<User>(null);
+
+  constructor(
+    private http: HttpClient,
+    private tokenStorageService: TokenStorageService
+  ) {}
+
+  login(username: string, password: string): Observable<any> {
+    return this.http
+      .post(
+        AUTH_API + 'signin',
+        {
+          username,
+          password,
+        },
+        httpOptions
+      )
+      .pipe(
+        catchError(this.handleError),
+        tap((resData) => {
+          const user = new User(
+            resData.username,
+            resData.email,
+            resData.accessToken
+          );
+          this.user.next(user);
+        })
+      );
+  }
+
+  register(username: string, email: string, password: string): Observable<any> {
+    return this.http
+      .post(
+        AUTH_API + 'signup',
+        {
+          username,
+          email,
+          password,
+        },
+        httpOptions
+      )
+      .pipe(
+        catchError(this.handleError),
+        tap((resData) => {
+          const user = new User(
+            resData.username,
+            resData.email,
+            resData.accessToken
+          );
+          this.user.next(user);
+        })
+      );
+  }
+
+  logout() {
+    this.user.next(null);
+    this.tokenStorageService.signOut();
+  }
+
+  autoLogin() {
+    const user: {
+      username: string;
+      email: string;
+      id: number;
+      accessToken: string;
+    } = this.tokenStorageService.getUser();
+    if (!user) {
+      return;
+    }
+
+    const loadedUser = new User(user.username, user.email, user.accessToken);
+
+    if (loadedUser.token) {
+      this.user.next(loadedUser);
+    }
+  }
+
+  delete(userId: number): Observable<any> {
+    if (this.user) {
+      console.log(this.user);
+      return this.http.delete(AUTH_API + 'delete/' + userId, httpOptions);
+    }
+  }
+
+  private handleError() {
+    const errorMessage = 'An unknown error occurred!';
+    return throwError(errorMessage);
+  }
+}

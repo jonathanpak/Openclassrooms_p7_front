@@ -13,29 +13,34 @@
   </button>
   <div class="collapse navbar-collapse" id="collapsibleNavId">
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
+      <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn">
         <a class="nav-link" routerLink="/newsfeed"
           >Fil d'actualités <span class="sr-only">(current)</span></a
         >
       </li>
-      <li class="nav-item">
+      <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn">
         <a class="nav-link" routerLink="/forum">Forum</a>
       </li>
-      <li class="nav-item dropdown">
-        <a
-          class="nav-link dropdown-toggle"
-          href="#"
-          id="dropdownId"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          >Paramètres</a
-        >
-        <div class="dropdown-menu" aria-labelledby="dropdownId">
-          <a class="dropdown-item" href="#">Déconnexion</a>
-          <a class="dropdown-item" href="#">Désinscription</a>
-        </div>
+      <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
+        <a class="nav-link" routerLink="/login">Connexion</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
+        <a class="nav-link" routerLink="/register">Inscription</a>
       </li>
     </ul>
+  </div>
+  <div ngbDropdown class="d-inline-block" *ngIf="isLoggedIn">
+    <button
+      class="btn btn-outline-primary"
+      id="dropdownBasic1"
+      ngbDropdownToggle
+    >
+      Paramètres
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+      <button ngbDropdownItem routerLink="/profile">Profil</button>
+      <button ngbDropdownItem (click)="onLogout()">Déconnexion</button>
+      <button ngbDropdownItem (click)="onUnsubscribe()">Désinscription</button>
+    </div>
   </div>
 </nav>

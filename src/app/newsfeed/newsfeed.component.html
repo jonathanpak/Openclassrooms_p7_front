@@ -6,13 +6,13 @@
         <div class="card-header">
           <div class="media flex-wrap w-100 align-items-center">
             <img
-              [src]="post.author.displayPicture"
+              [src]="post.authorId"
               class="d-block ui-w-40 rounded-circle"
               style="max-height: 64px"
             />
             <div class="media-body ml-3">
               <a href="javascript:void(0)" data-abc="true">
-                {{ post.author.name }}
+                {{ post.authorId }}
               </a>
               <div class="text-muted small">
                 {{ post.dateCreated }}
