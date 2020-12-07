@@ -43,7 +43,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/forum']);
       },
       (err) => {
-        this.errorMessage = err.error.message;
+        this.errorMessage =
+          'Combinaison identifiant et mot de passe incorrecte';
         this.isLoginFailed = true;
       }
     );

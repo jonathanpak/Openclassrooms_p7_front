@@ -102,8 +102,33 @@ export class AuthService {
 
   delete(userId: number): Observable<any> {
     if (this.user) {
-      console.log(this.user);
       return this.http.delete(AUTH_API + 'delete/' + userId, httpOptions);
+    }
+  }
+
+  getUser(userId: number): Observable<any> {
+    return this.http.get(
+      'http://localhost:3000/api/user/' + userId,
+      httpOptions
+    );
+  }
+
+  update(
+    userId: number,
+    username: string,
+    imageUrl: string,
+    email: string
+  ): Observable<any> {
+    if (this.user) {
+      return this.http.put(
+        AUTH_API + 'update/' + userId,
+        {
+          username,
+          imageUrl,
+          email,
+        },
+        httpOptions
+      );
     }
   }
 
