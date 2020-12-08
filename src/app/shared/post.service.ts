@@ -1,17 +1,23 @@
+import { AuthService } from './auth.service';
 import { Post } from './post.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
+  private loggedInUserSubscription: Subscription;
+  currentUserId: number;
+
   private posts: Post[];
   private postsChanged = new Subject<any>();
   postChangedObservable = this.postsChanged.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {
+    this.getUserId();
+  }
 
   onPostsChanged() {
     this.postsChanged.next();
@@ -37,7 +43,7 @@ export class PostService {
   // }
 
   newPost(content: string, threadId: number) {
-    const authorId = 23; // GET AUTHOR ID
+    const authorId = this.currentUserId;
     // const dateCreated = new Date().toISOString().slice(0, 10);
 
     const newPost = new Post(authorId, content, threadId);
@@ -59,5 +65,15 @@ export class PostService {
       'http://localhost:3000/posts/' + postId + '/',
       updatedPost
     );
+  }
+
+  getUserId() {
+    (this.loggedInUserSubscription = this.authService
+      .getUserId()
+      .subscribe((userId) => {
+        this.currentUserId = userId.id;
+      })),
+      (err) => console.log(err),
+      () => this.loggedInUserSubscription.unsubscribe();
   }
 }

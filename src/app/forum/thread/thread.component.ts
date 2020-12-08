@@ -1,3 +1,4 @@
+import { AuthService } from './../../shared/auth.service';
 import { PostService } from './../../shared/post.service';
 import { Post } from './../../shared/post.model';
 import { Thread } from './../thread.model';
@@ -18,6 +19,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   private newPostSubscription: Subscription;
   private paramsSub: Subscription;
   private postsChangedSubscription: Subscription;
+  private userSubscription: Subscription;
 
   posts: Post[];
   thread: Thread;
@@ -26,11 +28,15 @@ export class ThreadComponent implements OnInit, OnDestroy {
   editMode = false;
   isThreadAuthor = true;
 
+  username: string;
+  imageUrl: string;
+
   constructor(
     private route: ActivatedRoute,
     private topicService: TopicService,
     private postService: PostService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +48,13 @@ export class ThreadComponent implements OnInit, OnDestroy {
       .getThread(this.id)
       .subscribe((thread: Thread) => {
         this.thread = thread[0];
+
+        this.userSubscription = this.authService
+          .getUserById(this.thread.authorId)
+          .subscribe((user) => {
+            this.username = user.username;
+            this.imageUrl = user.imageUrl;
+          });
       });
 
     this.getPosts();
@@ -59,12 +72,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
   onCancel() {
     this.answerMode = false;
   }
-
-  // onSubmit(form: NgForm) {
-  //   this.postService.newPost(form.value.content, this.id);
-  //   this.getPosts();
-  //   this.answerMode = false;
-  // }
 
   onSubmit(form: NgForm) {
     this.newPostSubscription = this.postService
@@ -134,5 +141,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.threadSubscription.unsubscribe();
     this.paramsSub.unsubscribe();
     this.postsChangedSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 }

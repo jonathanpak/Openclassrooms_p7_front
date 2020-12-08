@@ -15,8 +15,7 @@
                 {{ post.username }}
               </a>
               <div class="text-muted small">
-                {{ post.dateCreated }}
-                <!-- {{ post.dateCreated | date: shortDate }} -->
+                {{ post.dateCreated | date: "dd/M/yyyy" }}
               </div>
             </div>
             <div class="text-muted small ml-3" *ngIf="post.title">
@@ -35,10 +34,20 @@
           class="card-footer d-flex flex-wrap justify-content-end align-items-end px-0 pt-0 pb-3"
         >
           <div class="px-4 pt-3">
-            <button type="button" class="btn btn-success" *ngIf="post.title">
+            <button
+              type="button"
+              class="btn btn-success"
+              *ngIf="post.title"
+              (click)="onThread(post)"
+            >
               <i class="ion ion-md-create"></i>&nbsp; Voir la conversation
             </button>
-            <button type="button" class="btn btn-primary" *ngIf="!post.title">
+            <button
+              type="button"
+              class="btn btn-primary"
+              *ngIf="!post.title"
+              (click)="onPost(post)"
+            >
               <i class="ion ion-md-create"></i>&nbsp; Voir le commentaire
             </button>
           </div>

@@ -5,6 +5,7 @@ import { Post } from './../shared/post.model';
 import { PostService } from './../shared/post.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { merge, Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-newsfeed',
@@ -14,7 +15,7 @@ import { merge, Subscription } from 'rxjs';
 export class NewsfeedComponent implements OnInit, OnDestroy {
   private postsSubscription: Subscription;
   private threadsSubscription: Subscription;
-  private userSubscription: Subscription;
+  private userSubscription: Subscription; // Reuse
 
   username: string;
   imageUrl: string;
@@ -26,7 +27,8 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
   constructor(
     private postService: PostService,
     private topicService: TopicService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -60,11 +62,19 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
             newValue.username = user.username;
             newValue.imageUrl = user.imageUrl;
           });
+          this.mergedArray.push(newValue);
         });
       }
     );
   }
 
+  onThread(post) {
+    this.router.navigate(['forum', 'subcategory', post.id]);
+  }
+
+  onPost(post) {
+    this.router.navigate(['forum', 'subcategory', post.threadId]);
+  }
   ngOnDestroy() {
     this.postsSubscription.unsubscribe();
     this.threadsSubscription.unsubscribe();

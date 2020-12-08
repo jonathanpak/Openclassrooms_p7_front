@@ -1,3 +1,4 @@
+import { AuthService } from './../../shared/auth.service';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { PostService } from './../../shared/post.service';
@@ -12,14 +13,28 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 export class SinglePostComponent implements OnInit, OnDestroy {
   @Input() post: Post;
 
+  private userSubscription: Subscription;
   private postSubscription: Subscription;
 
   isPostAuthor = true;
   editMode = false;
 
-  constructor(private postService: PostService) {}
+  username: string;
+  imageUrl: string;
 
-  ngOnInit(): void {}
+  constructor(
+    private postService: PostService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.userSubscription = this.authService
+      .getUserById(this.post.authorId)
+      .subscribe((user) => {
+        this.username = user.username;
+        this.imageUrl = user.imageUrl;
+      });
+  }
 
   onEditPost() {
     this.editMode = true;
@@ -58,5 +73,7 @@ export class SinglePostComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
+  }
 }

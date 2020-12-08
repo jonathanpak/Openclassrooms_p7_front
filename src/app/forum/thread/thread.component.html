@@ -5,16 +5,15 @@
         <div class="card-header">
           <div class="media flex-wrap w-100 align-items-center">
             <img
-              src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1574583246/AAA/2.jpg"
+              [src]="imageUrl"
               class="d-block ui-w-40 rounded-circle"
+              style="max-height: 50px"
               alt=""
             />
             <div class="media-body ml-3">
-              <a href="javascript:void(0)" data-abc="true">{{
-                thread.authorId
-              }}</a>
+              <a href="javascript:void(0)" data-abc="true">{{ username }}</a>
               <div class="text-muted small">
-                Créé le {{ thread.dateCreated }}
+                Créé le {{ thread.dateCreated | date: "dd/M/yyyy" }}
               </div>
             </div>
             <div class="text-muted small ml-3">
