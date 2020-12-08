@@ -1,3 +1,4 @@
+import { AuthService } from './../shared/auth.service';
 import { TopicService } from './../forum/topic.service';
 import { Thread } from './../forum/thread.model';
 import { Post } from './../shared/post.model';
@@ -13,6 +14,10 @@ import { merge, Subscription } from 'rxjs';
 export class NewsfeedComponent implements OnInit, OnDestroy {
   private postsSubscription: Subscription;
   private threadsSubscription: Subscription;
+  private userSubscription: Subscription;
+
+  username: string;
+  imageUrl: string;
 
   recentPosts: Post[];
   recentThreads: Thread[];
@@ -20,7 +25,8 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
 
   constructor(
     private postService: PostService,
-    private topicService: TopicService
+    private topicService: TopicService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +37,12 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
       (error) => console.log(error),
       () => {
         this.recentThreads.forEach((value) => {
-          this.mergedArray.push(value);
+          const newValue = value;
+
+          console.log(value);
+          newValue.username = 'John';
+
+          this.mergedArray.push(newValue);
         });
       }
     );
@@ -43,15 +54,24 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
       (error) => console.log(error),
       () => {
         this.recentPosts.forEach((value) => {
-          this.mergedArray.push(value);
-          console.log(this.mergedArray);
+          const newValue = value;
+          newValue.username = 'John';
+
+          this.mergedArray.push(newValue);
         });
       }
     );
   }
 
+  getUserDatas(post) {
+    this.userSubscription = this.authService
+      .getUserById(post.authorId)
+      .subscribe((data) => console.log(data));
+  }
+
   ngOnDestroy() {
     this.postsSubscription.unsubscribe();
     this.threadsSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 }

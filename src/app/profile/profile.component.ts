@@ -13,6 +13,8 @@ import { TokenStorageService } from '../shared/token-storage.service';
 export class ProfileComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
   userSubscription: Subscription;
+  loggedInUserSubscription: Subscription;
+  currentUserId: number;
 
   currentUser: any;
   username: string;
@@ -27,9 +29,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.token.getUser();
+    this.loggedInUserSubscription = this.authService
+      .getUserId()
+      .subscribe((userId) => {
+        this.currentUserId = userId.id;
+      });
+
     this.userSubscription = this.authService
-      .getUser(this.currentUser.id)
+      .getUserById(this.currentUserId)
       .subscribe(
         (user) => {
           this.currentUser = user;
@@ -40,7 +47,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             user.accessToken
           );
 
-          this.authService.user.next(userUpdated);
+          this.token.saveUser(userUpdated);
         },
         (err) => console.log(err),
         () => {
@@ -78,5 +85,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
+    this.loggedInUserSubscription.unsubscribe();
   }
 }
