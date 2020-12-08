@@ -38,9 +38,10 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
       () => {
         this.recentThreads.forEach((value) => {
           const newValue = value;
-
-          console.log(value);
-          newValue.username = 'John';
+          this.authService.getUserById(value.authorId).subscribe((user) => {
+            newValue.username = user.username;
+            newValue.imageUrl = user.imageUrl;
+          });
 
           this.mergedArray.push(newValue);
         });
@@ -55,23 +56,18 @@ export class NewsfeedComponent implements OnInit, OnDestroy {
       () => {
         this.recentPosts.forEach((value) => {
           const newValue = value;
-          newValue.username = 'John';
-
-          this.mergedArray.push(newValue);
+          this.authService.getUserById(value.authorId).subscribe((user) => {
+            newValue.username = user.username;
+            newValue.imageUrl = user.imageUrl;
+          });
         });
       }
     );
   }
 
-  getUserDatas(post) {
-    this.userSubscription = this.authService
-      .getUserById(post.authorId)
-      .subscribe((data) => console.log(data));
-  }
-
   ngOnDestroy() {
     this.postsSubscription.unsubscribe();
     this.threadsSubscription.unsubscribe();
-    this.userSubscription.unsubscribe();
+    // this.userSubscription.unsubscribe();
   }
 }
