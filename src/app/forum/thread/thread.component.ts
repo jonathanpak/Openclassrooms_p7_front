@@ -20,13 +20,14 @@ export class ThreadComponent implements OnInit, OnDestroy {
   private paramsSub: Subscription;
   private postsChangedSubscription: Subscription;
   private userSubscription: Subscription;
+  private userIdSubscription: Subscription;
 
   posts: Post[];
   thread: Thread;
   id;
   answerMode = false;
   editMode = false;
-  isThreadAuthor = true;
+  isThreadAuthor = false;
 
   username: string;
   imageUrl: string;
@@ -56,6 +57,12 @@ export class ThreadComponent implements OnInit, OnDestroy {
             this.imageUrl = user.imageUrl;
           });
       });
+
+    this.userIdSubscription = this.authService.getUserId().subscribe((id) => {
+      if (id.id === this.thread.authorId) {
+        this.isThreadAuthor = true;
+      }
+    });
 
     this.getPosts();
 
@@ -142,5 +149,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.paramsSub.unsubscribe();
     this.postsChangedSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
+    this.userIdSubscription.unsubscribe();
   }
 }

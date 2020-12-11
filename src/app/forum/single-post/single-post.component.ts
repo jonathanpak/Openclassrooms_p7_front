@@ -14,9 +14,10 @@ export class SinglePostComponent implements OnInit, OnDestroy {
   @Input() post: Post;
 
   private userSubscription: Subscription;
+  private userIdSubscription: Subscription;
   private postSubscription: Subscription;
 
-  isPostAuthor = true;
+  isPostAuthor = false;
   editMode = false;
 
   username: string;
@@ -34,6 +35,12 @@ export class SinglePostComponent implements OnInit, OnDestroy {
         this.username = user.username;
         this.imageUrl = user.imageUrl;
       });
+
+    this.userIdSubscription = this.authService.getUserId().subscribe((id) => {
+      if (id.id === this.post.authorId) {
+        this.isPostAuthor = true;
+      }
+    });
   }
 
   onEditPost() {
@@ -75,5 +82,6 @@ export class SinglePostComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
+    this.userIdSubscription.unsubscribe();
   }
 }

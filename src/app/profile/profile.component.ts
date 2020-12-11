@@ -29,33 +29,35 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loggedInUserSubscription = this.authService
-      .getUserId()
-      .subscribe((userId) => {
+    this.loggedInUserSubscription = this.authService.getUserId().subscribe(
+      (userId) => {
         this.currentUserId = userId.id;
-      });
+      },
+      (err) => console.log(err),
+      () => {
+        this.userSubscription = this.authService
+          .getUserById(this.currentUserId)
+          .subscribe(
+            (user) => {
+              this.currentUser = user;
 
-    this.userSubscription = this.authService
-      .getUserById(this.currentUserId)
-      .subscribe(
-        (user) => {
-          this.currentUser = user;
+              const userUpdated = new User(
+                user.username,
+                user.email,
+                user.accessToken
+              );
 
-          const userUpdated = new User(
-            user.username,
-            user.email,
-            user.accessToken
+              this.token.saveUser(userUpdated);
+            },
+            (err) => console.log(err),
+            () => {
+              this.setUserDatas();
+              console.log('Success');
+              // User.next
+            }
           );
-
-          this.token.saveUser(userUpdated);
-        },
-        (err) => console.log(err),
-        () => {
-          this.setUserDatas();
-          console.log('Success');
-          // User.next
-        }
-      );
+      }
+    );
   }
 
   setUserDatas() {
