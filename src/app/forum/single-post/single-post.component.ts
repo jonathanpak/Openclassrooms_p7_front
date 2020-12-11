@@ -16,12 +16,16 @@ export class SinglePostComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
   private userIdSubscription: Subscription;
   private postSubscription: Subscription;
+  private likeSubscription: Subscription;
 
   isPostAuthor = false;
   editMode = false;
+  userLikesPost = false;
 
+  currentUserId: number;
   username: string;
   imageUrl: string;
+  likesAmount: number;
 
   constructor(
     private postService: PostService,
@@ -36,11 +40,27 @@ export class SinglePostComponent implements OnInit, OnDestroy {
         this.imageUrl = user.imageUrl;
       });
 
-    this.userIdSubscription = this.authService.getUserId().subscribe((id) => {
-      if (id.id === this.post.authorId) {
-        this.isPostAuthor = true;
+    this.userIdSubscription = this.authService.getUserId().subscribe(
+      (id) => {
+        if (id.id === this.post.authorId) {
+          this.isPostAuthor = true;
+          this.currentUserId = id.id;
+        }
+      },
+      (err) => console.log(err),
+      () => {
+        this.likeSubscription = this.postService
+          .getLikes(this.post.id)
+          .subscribe((data) => {
+            const likesString = data[0].usersLike;
+            let likeArray = likesString.split(',').map((x) => +x);
+            this.likesAmount = likeArray.length - 1;
+            if (likeArray.includes(this.currentUserId)) {
+              this.userLikesPost = true;
+            }
+          });
       }
-    });
+    );
   }
 
   onEditPost() {
@@ -80,8 +100,13 @@ export class SinglePostComponent implements OnInit, OnDestroy {
     );
   }
 
+  onLike() {
+    console.log('Hello like');
+  }
+
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
     this.userIdSubscription.unsubscribe();
+    this.likeSubscription.unsubscribe();
   }
 }

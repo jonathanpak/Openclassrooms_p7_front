@@ -37,11 +37,6 @@ export class PostService {
     return this.http.get('http://localhost:3000/posts/' + id + '/');
   }
 
-  // newPost(content: string, thread: string) {
-  //   const newPost = new Post(23, 'This is my third post', 28);
-  //   this.posts.push(newPost);
-  // }
-
   newPost(content: string, threadId: number) {
     const authorId = this.currentUserId;
     // const dateCreated = new Date().toISOString().slice(0, 10);
@@ -75,5 +70,13 @@ export class PostService {
       })),
       (err) => console.log(err),
       () => this.loggedInUserSubscription.unsubscribe();
+  }
+
+  updateLike(postId) {
+    return this.http.put('http://localhost:3000/posts/likes/' + postId);
+  }
+
+  getLikes(postId) {
+    return this.http.get('http://localhost:3000/posts/likes/' + postId);
   }
 }

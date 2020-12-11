@@ -31,8 +31,12 @@
             class="text-muted d-inline-flex align-items-center align-middle"
             data-abc="true"
           >
-            <i class="fa fa-heart text-danger"></i>&nbsp;
-            <span class="align-middle">445</span>
+            <span class="align-middle" (click)="onLike()" *ngIf="!userLikesPost"
+              >🤍 {{ likesAmount }}</span
+            >
+            <span class="align-middle" (click)="onLike()" *ngIf="userLikesPost"
+              >❤️ {{ likesAmount }}</span
+            >
           </a>
         </div>
         <div
