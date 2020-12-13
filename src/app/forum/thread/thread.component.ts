@@ -21,6 +21,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   private postsChangedSubscription: Subscription;
   private userSubscription: Subscription;
   private userIdSubscription: Subscription;
+  private likeSubscription: Subscription;
 
   posts: Post[];
   thread: Thread;
@@ -28,9 +29,13 @@ export class ThreadComponent implements OnInit, OnDestroy {
   answerMode = false;
   editMode = false;
   isThreadAuthor = false;
+  userLikesThread = false;
 
+  currentUserId: number;
   username: string;
   imageUrl: string;
+  likesAmount: number;
+  userLikesPost = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,11 +63,18 @@ export class ThreadComponent implements OnInit, OnDestroy {
           });
       });
 
-    this.userIdSubscription = this.authService.getUserId().subscribe((id) => {
-      if (id.id === this.thread.authorId) {
-        this.isThreadAuthor = true;
+    this.userIdSubscription = this.authService.getUserId().subscribe(
+      (id) => {
+        this.currentUserId = id.id;
+        if (id.id === this.thread.authorId) {
+          this.isThreadAuthor = true;
+        }
+      },
+      (err) => console.log(err),
+      () => {
+        this.updateLikes();
       }
-    });
+    );
 
     this.getPosts();
 
@@ -142,6 +154,32 @@ export class ThreadComponent implements OnInit, OnDestroy {
         },
         (error) => console.log(error)
       );
+  }
+
+  onLike() {
+    this.postService.updateThreadLike(this.thread.id).subscribe(
+      (data) => {
+        console.log('Likes updated');
+      },
+      (err) => console.log(err),
+      () => this.updateLikes()
+    );
+  }
+
+  updateLikes() {
+    this.likeSubscription = this.postService
+      .getThreadLikes(this.thread.id)
+      .subscribe((data) => {
+        const likesString = data[0].usersLike;
+        let likeArray = likesString.split(',').map((x) => +x);
+        this.likesAmount = likeArray.length - 1;
+
+        if (likeArray.includes(this.currentUserId)) {
+          this.userLikesPost = true;
+        } else {
+          this.userLikesPost = false;
+        }
+      });
   }
 
   ngOnDestroy() {
