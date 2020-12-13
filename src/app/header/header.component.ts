@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onUnsubscribe() {
-    this.authService.delete(3).subscribe(
+    this.authService.delete().subscribe(
       () => console.log('User deleted'),
       (error) => console.log(error),
       () => this.authService.logout()

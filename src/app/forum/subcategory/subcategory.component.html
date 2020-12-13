@@ -66,9 +66,10 @@
             >{{ thread.title }}</a
           >
           <div class="text-muted small mt-1">
-            Créée le {{ thread.dateCreated }} &nbsp;·&nbsp;
+            Créée le {{ thread.dateCreated | date: "dd/M/yyyy" }}
+            &nbsp;·&nbsp;
             <a href="javascript:void(0)" class="text-muted" data-abc="true">{{
-              thread.authorId
+              thread.username
             }}</a>
           </div>
         </div>
@@ -76,23 +77,4 @@
     </div>
     <hr class="m-0" />
   </div>
-  <nav>
-    <ul class="pagination mb-5">
-      <li class="page-item disabled">
-        <a class="page-link" href="javascript:void(0)" data-abc="true">«</a>
-      </li>
-      <li class="page-item active">
-        <a class="page-link" href="javascript:void(0)" data-abc="true">1</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="javascript:void(0)" data-abc="true">2</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="javascript:void(0)" data-abc="true">3</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="javascript:void(0)" data-abc="true">»</a>
-      </li>
-    </ul>
-  </nav>
 </div>

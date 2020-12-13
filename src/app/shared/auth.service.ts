@@ -54,27 +54,27 @@ export class AuthService {
   }
 
   register(username: string, email: string, password: string): Observable<any> {
-    return this.http
-      .post(
-        AUTH_API + 'signup',
-        {
-          username,
-          email,
-          password,
-        },
-        httpOptions
-      )
-      .pipe(
-        catchError(this.handleError),
-        tap((resData) => {
-          const user = new User(
-            resData.username,
-            resData.email,
-            resData.accessToken
-          );
-          this.user.next(user);
-        })
-      );
+    return this.http.post(
+      AUTH_API + 'signup',
+      {
+        username,
+        email,
+        password,
+      },
+      httpOptions
+    );
+    // .pipe(
+    //   catchError(this.handleError),
+    //   tap((resData) => {
+    //     console.log(resData);
+    //     const user = new User(
+    //       resData.username,
+    //       resData.email,
+    //       resData.accessToken
+    //     );
+    //     this.user.next(user);
+    //   })
+    // );
   }
 
   logout() {
@@ -100,9 +100,9 @@ export class AuthService {
     }
   }
 
-  delete(userId: number): Observable<any> {
+  delete(): Observable<any> {
     if (this.user) {
-      return this.http.delete(AUTH_API + 'delete/' + userId, httpOptions);
+      return this.http.delete(AUTH_API + 'delete/', httpOptions);
     }
   }
 

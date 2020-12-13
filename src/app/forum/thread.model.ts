@@ -9,6 +9,8 @@ export class Thread {
   public usersLike?: string[];
   public likeAmount: number;
   public answersAmount: [];
+  public username: string;
+  public imageUrl: string;
 
   constructor(
     authorId: number,

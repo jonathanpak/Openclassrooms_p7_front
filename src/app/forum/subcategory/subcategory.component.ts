@@ -1,3 +1,4 @@
+import { AuthService } from './../../shared/auth.service';
 import { Thread } from './../thread.model';
 import { TopicService } from './../topic.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -16,12 +17,15 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
   private topicSubscription: Subscription;
   category: number;
   threads: Thread[] = [];
+  displayThreads = [];
   newThread = false;
+  username: string;
 
   constructor(
     private topicService: TopicService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -62,9 +66,19 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
   getThreads() {
     this.threadSubscription = this.topicService
       .getThreads(this.category)
-      .subscribe((threads: Thread[]) => {
-        this.threads = threads;
-      });
+      .subscribe(
+        (threads: Thread[]) => {
+          this.threads = threads;
+        },
+        (err) => console.log(err),
+        () => {
+          for (let thread of this.threads) {
+            this.authService.getUserById(thread.authorId).subscribe((user) => {
+              thread.username = user.username;
+            });
+          }
+        }
+      );
   }
 
   ngOnDestroy() {

@@ -91,11 +91,14 @@ export class TopicService {
   }
 
   getUserId() {
-    this.loggedInUserSubscription = this.authService
-      .getUserId()
-      .subscribe((userId) => {
+    this.loggedInUserSubscription = this.authService.getUserId().subscribe(
+      (userId) => {
         this.currentUserId = userId.id;
-      });
-    this.loggedInUserSubscription.unsubscribe();
+      },
+      (err) => console.log(err),
+      () => {
+        this.loggedInUserSubscription.unsubscribe();
+      }
+    );
   }
 }

@@ -73,11 +73,11 @@ export class PostService {
   }
 
   updateLike(postId) {
-    return this.http.put('http://localhost:3000/posts/likes/' + postId);
+    return this.http.put('http://localhost:3000/posts/likes/' + postId, '');
   }
 
   updateThreadLike(threadId) {
-    return this.http.put('http://localhost:3000/threads/likes/' + threadId);
+    return this.http.put('http://localhost:3000/threads/likes/' + threadId, '');
   }
 
   getLikes(postId) {
