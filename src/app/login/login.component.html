@@ -8,60 +8,63 @@
           #f="ngForm"
           novalidate
         >
-          <div class="form-group">
-            <label for="username">Identifiant</label>
-            <input
-              type="text"
-              class="form-control"
-              name="username"
-              [(ngModel)]="form.username"
-              required
-              #username="ngModel"
-            />
-            <div
-              class="alert alert-danger"
-              role="alert"
-              *ngIf="f.submitted && username.invalid"
-            >
-              Veuillez entrer votre nom d'utilisateur !
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input
-              type="password"
-              class="form-control"
-              name="password"
-              [(ngModel)]="form.password"
-              required
-              minlength="6"
-              #password="ngModel"
-            />
-            <div
-              class="alert alert-danger"
-              role="alert"
-              *ngIf="f.submitted && password.invalid"
-            >
-              <div *ngIf="password.errors.required">
-                Veuillez entrer votre mot de passe.
-              </div>
-              <div *ngIf="password.errors.minlength">
-                Le mot de passe doit contenir 6 charactères minimum.
+          <div class="card card-body">
+            <div class="form-group">
+              <label for="username">Identifiant</label>
+              <input
+                type="text"
+                class="form-control"
+                name="username"
+                [(ngModel)]="form.username"
+                required
+                #username="ngModel"
+                minlength="3"
+              />
+              <div
+                class="alert alert-danger"
+                role="alert"
+                *ngIf="username.touched && username.invalid"
+              >
+                L'identifiant doit contenir 3 charactères minimum.
               </div>
             </div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary btn-block" [disabled]="!f.valid">
-              Connexion
-            </button>
-          </div>
-          <div class="form-group">
-            <div
-              class="alert alert-danger"
-              role="alert"
-              *ngIf="f.submitted && isLoginFailed"
-            >
-              {{ errorMessage }}
+            <div class="form-group">
+              <label for="password">Mot de passe</label>
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                [(ngModel)]="form.password"
+                required
+                minlength="6"
+                #password="ngModel"
+              />
+              <div
+                class="alert alert-danger"
+                role="alert"
+                *ngIf="password.touched && password.invalid"
+              >
+                <div *ngIf="password.errors.required">
+                  Veuillez entrer votre mot de passe.
+                </div>
+                <div *ngIf="password.errors.minlength">
+                  Le mot de passe doit contenir 6 charactères minimum.
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" [disabled]="!f.valid">
+                Connexion
+              </button>
+            </div>
+            <div class="form-group">
+              <div
+                class="alert alert-danger"
+                role="alert"
+                *ngIf="f.submitted && isLoginFailed"
+              >
+                {{ errorMessage }}
+              </div>
             </div>
           </div>
         </form>

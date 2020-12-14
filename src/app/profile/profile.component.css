@@ -1,3 +1,7 @@
 #imageDisplay {
   max-height: 200px;
 }
+
+.mt-100 {
+  margin-top: 80px;
+}

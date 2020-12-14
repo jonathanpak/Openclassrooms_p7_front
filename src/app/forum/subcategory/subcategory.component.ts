@@ -30,8 +30,12 @@ export class SubcategoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.paramsSubscription = this.route.queryParams.subscribe((params) => {
-      const category = params['category'];
-      this.category = category;
+      if (params['category']) {
+        const category = params['category'];
+        this.category = category;
+      } else {
+        this.router.navigate(['/forum']);
+      }
     });
 
     this.getThreads();

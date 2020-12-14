@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+
+.bg-groupomania {
+  background-color: #091f43;
+}
+
+.bg-groupomania a {
+  color: white;
+}
+
+.active {
+  font-weight: bold;
+}

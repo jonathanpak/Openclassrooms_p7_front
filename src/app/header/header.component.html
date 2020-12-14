@@ -1,5 +1,7 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
-  <a class="navbar-brand" href="#">Groupomania</a>
+<nav class="navbar navbar-expand-sm bg-groupomania">
+  <a class="navbar-brand" href="/"
+    ><img src="./assets/logo.svg" alt="Groupomania" style="max-width: 200px"
+  /></a>
   <button
     class="navbar-toggler d-lg-none"
     type="button"
@@ -30,11 +32,7 @@
     </ul>
   </div>
   <div ngbDropdown class="d-inline-block" *ngIf="isLoggedIn">
-    <button
-      class="btn btn-outline-primary"
-      id="dropdownBasic1"
-      ngbDropdownToggle
-    >
+    <button class="btn btn-outline-light" id="dropdownBasic1" ngbDropdownToggle>
       Paramètres
     </button>
     <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
